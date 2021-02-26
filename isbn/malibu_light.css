@@ -7,19 +7,13 @@ Hell #F1EDEB
 
 */
 
-
-
-
-
 /***** ALLGEMEINE EINSTELLUNGEN *****/
 
 body {
   margin: 0;
-  font-family:  Arial, Verdana, sans-serif;
+  font-family: Arial, Verdana, sans-serif;
   background-color: #fff;
 }
-
-
 
 /* RESET */
 
@@ -29,13 +23,11 @@ body {
   color: #222429;
 }
 
-
 /* BESUCHTE LINKS */
 
 a:visited {
   color: #606060;
 }
-
 
 /* PADDING FÜR SEKTIONEN */
 
@@ -43,49 +35,44 @@ a:visited {
   padding: 0em 10em;
 }
 
-#ausgaben, #pda, #bestandsabgleich div, #weiteres, #links, #status, #titel, #verkaufsinfo {
+#ausgaben,
+#pda,
+#bestandsabgleich div,
+#weiteres,
+#links,
+#status,
+#titel,
+#verkaufsinfo {
   padding: 1em 0em;
 }
-
-
-
-
 
 /***** ÜBERSCHRIFT *****/
 
 h1 {
-
   margin: 0;
   padding: 1em 0em;
   text-align: center;
   font-weight: lighter;
   text-transform: uppercase;
   color: #222429;
-
 }
 
-
 hr {
-
   width: 7em;
   margin: auto;
   margin-top: 1em;
   border: none;
   height: 1px;
   background-color: #222429;
-
 }
-
 
 #notificaton {
   padding: 16px;
 }
 
-
-
 /***** ELEMENTE *****/
 
-.button  {
+.button {
   border: 1px solid #222429;
   border-radius: 4px;
   color: #222429;
@@ -93,23 +80,19 @@ hr {
 }
 
 .button:hover {
-  border-color: #F1EDEB;
-  color: #F1EDEB;
+  border-color: #f1edeb;
+  color: #f1edeb;
   background-color: #34373e;
 }
-
-
 
 /***** SUCHZEILE *****/
 
 #Suchzeile {
-
   width: 100%;
   padding: 1em 5em;
   border: none;
   text-align: center;
-  background-color: #F1EDEB;
-
+  background-color: #f1edeb;
 }
 
 #isbnTD {
@@ -125,56 +108,43 @@ hr {
   padding: 10px;
 }
 
-
-
 /* HILFE UND DESIGN-CHANGE */
 
-#Suchzeile a, #Suchzeile p {
-
+#Suchzeile a,
+#Suchzeile p {
   display: inline;
   font-weight: bold;
   text-decoration: none;
   color: #222429;
-
 }
 
 #ChangeDesignButton:hover {
-  cursor: pointer; 
+  cursor: pointer;
 }
-
-
 
 /* SUCHFELDER UND BUTTONS */
 
-input, select {
-
+input,
+select {
   padding: 0.4em;
   border: 1px solid #222429;
   border-radius: 4px;
   color: #222429;
-
 }
-
-
-
-
 
 /***** ERGEBNIS | TITEL *****/
 
 #titel {
   text-align: center;
-  color: #F1EDEB;
+  color: #f1edeb;
   background-color: #34373e;
 }
 
-#titel b, #titel i {
+#titel b,
+#titel i {
   font-size: 1.5em;
-  color: #F1EDEB;
+  color: #f1edeb;
 }
-
-
-
-
 
 /***** VERKAUFSINFOS *****/
 
@@ -187,23 +157,17 @@ input, select {
   /*text-align: justify;*/
 }
 
-
-
-
-
 /***** VERSCHIEDENE AUSGABEN *****/
 
 #ausgaben table {
-
   border-collapse: collapse;
   border: none;
   border-top: 2px solid #34373e;
   border-bottom: 2px solid #34373e;
-
 }
 
 #ausgabenTable tr:nth-child(even) {
-    background-color: #F1EDEB;
+  background-color: #f1edeb;
 }
 
 #ausgaben td {
@@ -216,20 +180,17 @@ input, select {
   text-align: center;
 }
 
-
-
 /* AUSGABEN BUTTONS */
 
 #ausgaben .btn {
-
   border: 1px solid;
   border-radius: 4px;
   padding: 0.3em;
   background-color: #fff;
-
 }
 
-#ausgaben .btn, #ausgaben .btn * {
+#ausgaben .btn,
+#ausgaben .btn * {
   display: inline;
 }
 
@@ -243,43 +204,41 @@ input, select {
   width: auto;
 }
 
-
-
-
-
 /***** VERBUENDE *****/
 
 #verbuende {
-
   margin-top: 2em;
   border: none;
   border-top: 1px solid #fff;
   border-radius: 4px;
   border-collapse: collapse;
-
 }
 
 #verbuende * {
   border: none;
 }
 
-.verbuendeUeber, .verbuendeUeber th {
+.verbuendeUeber,
+.verbuendeUeber th {
   background-color: #34373e;
 }
 
 .verbuendeUeber * {
-  color: #F1EDEB;
+  color: #f1edeb;
 }
 
 .verbuendeUeber th {
   text-align: left;
 }
 
-#verbuende tr:nth-child(2n+3), #verbuende tr:nth-child(2n+3) td {
-  background-color: #F1EDEB;
+#verbuende tr:nth-child(2n + 3),
+#verbuende tr:nth-child(2n + 3) td {
+  /* background-color: #F1EDEB; */
+  background-color: rgba(52, 55, 62, 0.1);
 }
 
-#verbuende td, #verbuende th {
+#verbuende td,
+#verbuende th {
   padding: 0.5em;
 }
 
@@ -301,28 +260,39 @@ input, select {
   /*text-decoration: none;*/
 }
 
-#rvkB3KAT, #rvkHBZ, #rvkK10PLUS, #rvkHEBIS, #rvkOBVSG, #rvkSWB, #rvkSWISS,
-#swB3KAT, #swHBZ, #swK10PLUS, #swHEBIS, #swOBVSG, #swSWB, #swSWISS, #rvkaggregiert a {
-
-
+#rvkB3KAT,
+#rvkHBZ,
+#rvkK10PLUS,
+#rvkHEBIS,
+#rvkOBVSG,
+#rvkSWB,
+#rvkSWISS,
+#swB3KAT,
+#swHBZ,
+#swK10PLUS,
+#swHEBIS,
+#swOBVSG,
+#swSWB,
+#swSWISS,
+#rvkaggregiert a {
   font-weight: bold;
-
 }
 
-#rvkaggregiert, #ddcaggregiert {
+#rvkaggregiert,
+#ddcaggregiert {
   background-color: white;
 }
 
-.rvkError, .rvkError:visited {
+.rvkError,
+.rvkError:visited {
   color: darkred;
 }
 
-
 /* Spezielle Notationen (nur UB Bayreuth) der Form R...592 markieren */
-.rvk a[class$="592"][class^="R"], .rvkaggregiert a[class$="592"][class^="R"] {
+.rvk a[class$='592'][class^='R'],
+.rvkaggregiert a[class$='592'][class^='R'] {
   color: purple;
 }
-
 
 /***** LINKS *****/
 
@@ -331,14 +301,10 @@ input, select {
   text-align: center;
 }
 
-
-
-
-
 /***** STATUS *****/
 
 #status {
   text-align: center;
   color: #222429;
-  background-color: #F1EDEB;
+  background-color: #f1edeb;
 }

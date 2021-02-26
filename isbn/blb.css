@@ -1,0 +1,182 @@
+/**
+* @section font-face
+* Schrift Lato
+*/
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Light.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Light.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Light.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Light.ttf) format('truetype');
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-LightItalic.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-LightItalic.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-LightItalic.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-LightItalic.ttf) format('truetype');
+  font-style: italic;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Regular.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Regular.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Regular.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Regular.ttf) format('truetype');
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Italic.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Italic.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Italic.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Italic.ttf) format('truetype');
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Medium.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Medium.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Medium.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Medium.ttf) format('truetype');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-MediumItalic.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-MediumItalic.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-MediumItalic.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-MediumItalic.ttf) format('truetype');
+  font-style: italic;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Semibold.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Semibold.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Semibold.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Semibold.ttf) format('truetype');
+  font-style: normal;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-SemiboldItalic.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-SemiboldItalic.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-SemiboldItalic.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-SemiboldItalic.ttf) format('truetype');
+  font-style: italic;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Bold.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Bold.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Bold.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Bold.ttf) format('truetype');
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-BoldItalic.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-BoldItalic.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-BoldItalic.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-BoldItalic.ttf) format('truetype');
+  font-style: italic;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Black.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-Black.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Black.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-Black.ttf) format('truetype');
+  font-style: normal;
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-BlackItalic.eot);
+  src: url(https://layout.blb-karlsruhe.de/fonts/Lato-BlackItalic.woff2) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-BlackItalic.woff) format('woff2'),
+    url(https://layout.blb-karlsruhe.de/fonts/Lato-BlackItalic.ttf) format('truetype');
+  font-style: italic;
+  font-weight: 900;
+}
+/* body allg. */
+
+html,
+body {
+  background: rgba(0, 0, 0, 0) url('https://layout.blb-karlsruhe.de/images/cd-bg.jpg') no-repeat fixed 50% center /
+    cover;
+}
+
+body {
+  background: rgb(255, 255, 255, 0.5);
+  font-family: 'Lato', Arial, Helvetica, sans-serif !important;
+  width: 90%;
+  margin: 5px auto;
+  padding: 10px;
+  border-radius: 10px;
+  border: 3px solid none;
+}
+
+a {
+  color: #439d94;
+}
+
+#bestandsabgleich {
+  background-color: lightgray;
+  padding: 5px 15px;
+}
+
+div[class^='kvkBibName'],
+.kvkErrorBibName {
+  padding: 5px;
+}
+
+.kvkErrorBibName a {
+  color: #000;
+}
+
+table#verbuende td {
+  border: solid 1px rgba(52, 55, 62, 0.1);
+  border-style: solid none;
+  padding: 10px;
+  background-color: rgba(52, 55, 62, 0.1);
+}
+table#verbuende td:first-child {
+  border-left-style: solid;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+table#verbuende td:last-child {
+  border-right-style: solid;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+#kplus {
+  background-color: #ffbbbb;
+  border-bottom: 2px solid #34373e;
+  padding: 0px 5px;
+}

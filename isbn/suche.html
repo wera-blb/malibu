@@ -1,588 +1,668 @@
 <!doctype html>
 <html>
-<head>
-<title>
-Unterstützungstool für Fachreferatsarbeit
-</title>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<!--
+
+    <head>
+        <title>
+            Unterstützungstool für Fachreferatsarbeit
+        </title>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <link href="../img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        <!--
  * Copyright (C) 2013 Universitätsbibliothek Mannheim
  *
  * Author:
  *    Philipp Zumstein <philipp.zumstein@bib.uni-mannheim.de>
- * 
- * This is free software licensed under the terms of the GNU GPL, 
+ *
+ * This is free software licensed under the terms of the GNU GPL,
  * version 3, or (at your option) any later version.
  * See <http://www.gnu.org/licenses/> for more details.
  *
 -->
-<style type="text/css">
-body { font-family:  Arial, Verdana, sans-serif; }
-</style>
-	
-<!-- Stylesheet mit Link, damit per JS eindeutig zugegriffen werden kann -->
-<link id="stylesheet" href="malibu_light.css" type="text/css" rel="stylesheet">	
-	
-<script src="jquery-3.2.1.min.js"></script>
-<script src="clipboard.min.js"></script>
-<script type="text/javascript">
-if (typeof jQuery == 'undefined') {
-    alert("jQuery wurde nicht gefunden");
-}
-</script>
-<script src="rendering.js"></script>
-<script src="paketinfo.js"></script>
-<script type="text/javascript">
-function toggleHidden() {
-    $('.hidden').slideToggle();
-    return false;
-}
-</script>
-<script type="text/javascript">
+        <style type="text/css">
+            body {
+                font-family: Arial, Verdana, sans-serif;
+            }
+        </style>
+
+        <!-- Stylesheet mit Link, damit per JS eindeutig zugegriffen werden kann -->
+        <link id="stylesheet" href="malibu_light.css" type="text/css" rel="stylesheet">
+        <link id="stylesheet" href="blb.css" type="text/css" rel="stylesheet">
+
+        <script src="jquery-3.2.1.min.js"></script>
+        <script src="clipboard.min.js"></script>
+        <script type="text/javascript">
+            if (typeof jQuery == 'undefined') {
+                alert("jQuery wurde nicht gefunden");
+            }
+        </script>
+        <script src="rendering.js"></script>
+        <script src="paketinfo.js"></script>
+        <script type="text/javascript">
+            function toggleHidden() {
+                $('.hidden').slideToggle();
+                return false;
+            }
+        </script>
+        <script type="text/javascript">
 
 
-function aggregateRVK() {
-    var rvkNodes = $("#rvkSWB a, #rvkK10PLUS a, #rvkB3KAT a, #rvkHBZ a, #rvkHEBIS a, #rvkSWISS a, #rvkOBVSG a");
-    var frequencies = {};
-    var rvkExample = {};
-    for (let rvkNode of rvkNodes) {
-        let rvk = rvkNode.textContent;
-        frequencies[rvk] = frequencies[rvk] ? frequencies[rvk] + 1 : 1;
-        rvkExample[rvk] = rvkNode;
-    }
-    var rvkSorted = Object.keys(frequencies);
-    rvkSorted.sort();
-    $("#rvkaggregiert").html("");
-    for (let rvk of rvkSorted) {
-         
-         let jsonstring = $(rvkExample[rvk]).attr("data-json");
-         if (jsonstring) {
-             let jsondata = JSON.parse(jsonstring);
-             let treeconcepts = [];
-             let treenotations = [];
-             let currentjson = jsondata;
-             while (currentjson) {
-                 if ("node" in currentjson) {
-                     if ("benennung" in currentjson.node) {
-                         treeconcepts.unshift(currentjson.node.benennung);
-                         treenotations.unshift(currentjson.node.notation);
-                     }
-                     if ("ancestor" in currentjson.node) {
-                         currentjson = currentjson.node.ancestor;
-                     } else {
-                         currentjson = null;
-                     }
-                 } else {
-                     currentjson = null;
-                 }
-             }
-             var parent = $("#rvkaggregiert");
-             for (let i=0; i<treeconcepts.length; i++) {
-                 let node = treeconcepts[i];
-                 let notation = treenotations[i];
-                 let check = $("#rvkaggregiert div[title='" + notation + "']");
-                 if (check.length == 0) {
-                     let prefix = "";
-                     if (i == 0) {
-                         $("#rvkaggregiert").append("<br/>");
-                     } else {
-                         prefix = '<span style="visibility: hidden">' + "∟".repeat(i-1) + '</span>∟';
-                     }
-                     parent.append("<div title='" + notation + "'>" + prefix + node + "</div>");
-                 }
-                 parent = $("#rvkaggregiert div[title='" + notation + "']");
-             }
-             
-         }
-         if (rvkExample[rvk].classList.contains("rvkError")) {
-             parent = $("#rvkaggregiert");
-             parent.append("<br/>[Error]<br/>");
-         } else {
-              parent.append(": ");
-         }
-      	 parent.append("<b>" + frequencies[rvk] + " x </b>");
-         $(rvkExample[rvk]).clone().appendTo(parent);
-    }
-    $("#rvkaggregiert").append("<br/><br/><small><img src='../img/flash.svg' height='15px' /> powered by <a href='https://rvk.uni-regensburg.de/api/'>RVK API</a></small>");
+            function aggregateRVK() {
+                var rvkNodes = $("#rvkSWB a, #rvkK10PLUS a, #rvkB3KAT a, #rvkHBZ a, #rvkHEBIS a, #rvkSWISS a, #rvkOBVSG a");
+                var frequencies = {};
+                var rvkExample = {};
+                for (let rvkNode of rvkNodes) {
+                    let rvk = rvkNode.textContent;
+                    frequencies[rvk] = frequencies[rvk] ? frequencies[rvk] + 1 : 1;
+                    rvkExample[rvk] = rvkNode;
+                }
+                var rvkSorted = Object.keys(frequencies);
+                rvkSorted.sort();
+                $("#rvkaggregiert").html("");
+                for (let rvk of rvkSorted) {
 
-    $(".rvk").attr("style", "display: none");
-    $(".rvkaggregiert").removeAttr("style");
-}
+                    let jsonstring = $(rvkExample[rvk]).attr("data-json");
+                    if (jsonstring) {
+                        let jsondata = JSON.parse(jsonstring);
+                        let treeconcepts = [];
+                        let treenotations = [];
+                        let currentjson = jsondata;
+                        while (currentjson) {
+                            if ("node" in currentjson) {
+                                if ("benennung" in currentjson.node) {
+                                    treeconcepts.unshift(currentjson.node.benennung);
+                                    treenotations.unshift(currentjson.node.notation);
+                                }
+                                if ("ancestor" in currentjson.node) {
+                                    currentjson = currentjson.node.ancestor;
+                                } else {
+                                    currentjson = null;
+                                }
+                            } else {
+                                currentjson = null;
+                            }
+                        }
+                        var parent = $("#rvkaggregiert");
+                        for (let i = 0; i < treeconcepts.length; i++) {
+                            let node = treeconcepts[i];
+                            let notation = treenotations[i];
+                            let check = $("#rvkaggregiert div[title='" + notation + "']");
+                            if (check.length == 0) {
+                                let prefix = "";
+                                if (i == 0) {
+                                    $("#rvkaggregiert").append("<br/>");
+                                } else {
+                                    prefix = '<span style="visibility: hidden">' + "∟".repeat(i - 1) + '</span>∟';
+                                }
+                                parent.append("<div title='" + notation + "'>" + prefix + node + "</div>");
+                            }
+                            parent = $("#rvkaggregiert div[title='" + notation + "']");
+                        }
 
-function hideRVKAggregation() {
-    $(".rvk").removeAttr("style");
-    $(".rvkaggregiert").attr("style", "display: none");
-}
-	
+                    }
+                    if (rvkExample[rvk].classList.contains("rvkError")) {
+                        parent = $("#rvkaggregiert");
+                        parent.append("<br/>[Error]<br/>");
+                    } else {
+                        parent.append(": ");
+                    }
+                    parent.append("<b>" + frequencies[rvk] + " x </b>");
+                    $(rvkExample[rvk]).clone().appendTo(parent);
+                }
+                $("#rvkaggregiert").append("<br/><br/><small><img src='../img/flash.svg' height='15px' /> powered by <a href='https://rvk.uni-regensburg.de/api/'>RVK API</a></small>");
+
+                $(".rvk").attr("style", "display: none");
+                $(".rvkaggregiert").removeAttr("style");
+            }
+
+            function hideRVKAggregation() {
+                $(".rvk").removeAttr("style");
+                $(".rvkaggregiert").attr("style", "display: none");
+            }
 
 
-function aggregateDDC() {
-    var ddcNodes = $(".ddc a");
-    var frequencies = {};
-    var ddcExample = {};
-    for (let ddcNode of ddcNodes) {
-        let ddc = ddcNode.textContent;
-        frequencies[ddc] = frequencies[ddc] ? frequencies[ddc] + 1 : 1;
-        ddcExample[ddc] = ddcNode;
-    }
-    var ddcSorted = Object.keys(frequencies);
-    ddcSorted.sort();
-    $("#ddcaggregiert").html("");
-    for (let ddc of ddcSorted) {
-        $.ajax({
-            url: 'https://coli-conc.gbv.de/api/data?uri=http://dewey.info/class/' + ddc +'/e23/&properties=ancestors',
-            async: false,
-            dataType: 'json',
-            success: function (data) {
-                if (data.length > 0) {
-                    var foundMappings = [];
+
+            function aggregateDDC() {
+                var ddcNodes = $(".ddc a");
+                var frequencies = {};
+                var ddcExample = {};
+                for (let ddcNode of ddcNodes) {
+                    let ddc = ddcNode.textContent;
+                    frequencies[ddc] = frequencies[ddc] ? frequencies[ddc] + 1 : 1;
+                    ddcExample[ddc] = ddcNode;
+                }
+                var ddcSorted = Object.keys(frequencies);
+                ddcSorted.sort();
+                $("#ddcaggregiert").html("");
+                for (let ddc of ddcSorted) {
                     $.ajax({
-                         url: 'https://coli-conc.gbv.de/api/mappings?from=http://dewey.info/class/' + ddc +'/e23/&toScheme=rvk',
-                         async: false,
-                         dataType: 'json',
-                         success: function (dataMapping) {
-                              if (dataMapping.length > 0) {
-                                  for (let mappingConcept of dataMapping[0].to.memberSet) {
-                                      foundMappings.push(mappingConcept.notation.join(" + "));
-                                   }
-                              }
+                        url: 'https://coli-conc.gbv.de/api/data?uri=http://dewey.info/class/' + ddc + '/e23/&properties=ancestors',
+                        async: false,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.length > 0) {
+                                var foundMappings = [];
+                                $.ajax({
+                                    url: 'https://coli-conc.gbv.de/api/mappings?from=http://dewey.info/class/' + ddc + '/e23/&toScheme=rvk',
+                                    async: false,
+                                    dataType: 'json',
+                                    success: function (dataMapping) {
+                                        if (dataMapping.length > 0) {
+                                            for (let mappingConcept of dataMapping[0].to.memberSet) {
+                                                foundMappings.push(mappingConcept.notation.join(" + "));
+                                            }
+                                        }
+                                    }
+                                });
+
+                                let parent = $("#ddcaggregiert");
+                                let i = 0;
+                                for (let ancestor of data[0].ancestors) {
+                                    let notation = ancestor.notation[0];
+                                    if (notation.length < 2) continue;
+                                    let label = ancestor.prefLabel.de;
+                                    let check = $("#ddcaggregiert div[title='" + notation + "']");
+                                    if (check.length == 0) {
+                                        let prefix = "";
+                                        if (i == 0) {
+                                            $("#ddcaggregiert").append("<br/>");
+                                        } else {
+                                            prefix = '<span style="visibility: hidden">' + "∟".repeat(i - 1) + '</span>∟';
+                                        }
+                                        parent.append("<div title='" + notation + "'>" + prefix + label + "</div>");
+                                    }
+                                    parent = $("#ddcaggregiert div[title='" + notation + "']");
+                                    i++;
+                                }
+                                let name = data[0].prefLabel.de;
+                                let notation = data[0].notation[0];
+                                let freq = frequencies[notation];
+                                let prefix = '<span style="visibility: hidden">' + "∟".repeat(i - 1) + '</span>∟';
+                                parent.append("<div title='" + notation + "'>" + prefix + name + ": " + freq + " x </div>");
+                                $(ddcExample[notation]).clone().appendTo($("#ddcaggregiert div[title='" + notation + "']"));
+                                if (foundMappings.length > 0) {
+                                    $("#ddcaggregiert div[title='" + notation + "']").append(" → <b>" + renderRVK(foundMappings) + "</b>");
+                                    $("#ddcaggregiert div[title='" + notation + "'] a[class]").each(addBenennung);
+                                }
+                            } else {
+                                if ($("#ddcaggregaterest").length == 0) {
+                                    $("#ddcaggregiert").append("<br/><br/><div id='ddcaggregaterest'>[Keine Benennung gefunden für folgende DDC-Stellen]</div>");
+                                }
+                                $("#ddcaggregaterest").append("<br/>" + frequencies[ddc] + " x ");
+                                $(ddcExample[ddc]).clone().appendTo($("#ddcaggregaterest"));
+                            }
                         }
                     });
-          
-                    let parent = $("#ddcaggregiert");
-                    let i = 0;
-                    for (let ancestor of data[0].ancestors) {
-                        let notation = ancestor.notation[0];
-                        if (notation.length < 2) continue;
-                        let label = ancestor.prefLabel.de;
-                        let check = $("#ddcaggregiert div[title='" + notation + "']");
-                        if (check.length == 0) {
-                            let prefix = "";
-                            if (i == 0) {
-                                $("#ddcaggregiert").append("<br/>");
-                            } else {
-                                prefix = '<span style="visibility: hidden">' + "∟".repeat(i-1) + '</span>∟';
-                            }
-                            parent.append("<div title='" + notation + "'>" + prefix + label + "</div>");
-                        }
-                        parent = $("#ddcaggregiert div[title='" + notation + "']");
-                        i++;
-                    }
-                    let name = data[0].prefLabel.de;
-                    let notation = data[0].notation[0];
-                    let freq = frequencies[notation];
-                    let prefix = '<span style="visibility: hidden">' + "∟".repeat(i-1) + '</span>∟';
-                    parent.append("<div title='" + notation + "'>" + prefix + name + ": " + freq + " x </div>");
-                    $(ddcExample[notation]).clone().appendTo($("#ddcaggregiert div[title='" + notation + "']"));
-                    if (foundMappings.length > 0) {
-                        $("#ddcaggregiert div[title='" + notation + "']").append(" → <b>" + renderRVK(foundMappings) + "</b>");
-                        $("#ddcaggregiert div[title='" + notation + "'] a[class]").each(addBenennung);
-                    }
+                }
+                $("#ddcaggregiert").append("<br/><br/><small><img src='../img/by-nc-nd.svg' /> by <a href='https://www.oclc.org/'>OCLC</a> <img src='../img/flash.svg' height='15px' /> powered by <a href='https://coli-conc.gbv.de/api/'>coli-conc API</a></small>");
+
+                $(".ddc").attr("style", "display: none");
+                $(".ddcaggregiert").removeAttr("style");
+            }
+
+            function hideDDCAggregation() {
+                $(".ddc").removeAttr("style");
+                $(".ddcaggregiert").attr("style", "display: none");
+            }
+
+
+            //Funktion für Tauschen des Stylesheets
+            function ChangeDesign() {
+                //Falls id "stylesheet" vergeben
+                if (!!(document.getElementById("stylesheet"))) {
+                    //Nimm Link zu CSS heraus und ändere id
+                    document.getElementById("stylesheet").href = "";
+                    document.getElementById("stylesheet").id = "no-stylesheet";
                 } else {
-                    if ($("#ddcaggregaterest").length == 0) {
-                        $("#ddcaggregiert").append("<br/><br/><div id='ddcaggregaterest'>[Keine Benennung gefunden für folgende DDC-Stellen]</div>");
+                    document.getElementById("no-stylesheet").href = "malibu_light.css";
+                    document.getElementById("no-stylesheet").id = "stylesheet";
+                }
+            }
+
+
+            $(document).ready(function () {
+                var clipboard = new Clipboard(".btn");
+                clipboard.on('success', function (e) {
+                    showNotification('In die Zwischenablage kopiert!', '#8A4B08', 'white');
+                    //e.clearSelection();
+                });
+                clipboard.on('error', function (e) {
+                    showNotification('Jetzt Cmd+C zum Kopieren drücken!', '#8A4B08', 'white');
+                });
+
+                //Damit werden die Variablen ueber HTML ausgewertet (so wie GET Variablen in PHP)
+                if (getParameterByName("isbn")) {
+                    $('#eingabeIsbn').val(getParameterByName("isbn"));
+                    $('#eingabePpn').val('');
+                    isbnEingabe(getParameterByName("isbn"));
+                } else if (getParameterByName("ppn")) {
+                    $('#eingabePpn').val(getParameterByName("ppn"));
+                    $('#eingabeIsbn').val('');
+                    if (getParameterByName("verbund")) {
+                        $("option[name='eingabeVerbund'][value='" + getParameterByName('verbund') + "']").prop('checked', true);
+                        ppnEingabe(getParameterByName("ppn"), getParameterByName("verbund"));
+                    } else {
+                        ppnEingabe(getParameterByName("ppn"), "SWB");//Wird als Default-Wert gesetzt
                     }
-                    $("#ddcaggregaterest").append("<br/>" + frequencies[ddc] + " x ");
-                    $(ddcExample[ddc]).clone().appendTo($("#ddcaggregaterest"));
                 }
+
+                //Aktion bei ISBN Form:
+                $('#formIsbn').on('submit', function () {
+                    var parameter = $('#eingabeIsbn').val();
+                    window.location = "suche.html?isbn=" + parameter;
+                    return false;//damit sollte die eigentlich submit action ignoriert werden
+                });
+
+                //Aktion bei PPN Form:
+                $('#formPpn').on('submit', function () {
+                    var parameter = $('#eingabePpn').val();
+                    var parameter2 = $('option[name=\'eingabeVerbund\']:checked').val();
+                    window.location = "suche.html?ppn=" + parameter + "&verbund=" + parameter2;
+                    return false;//damit sollte die eigentlich submit action ignoriert werden
+                });
+
+            });
+
+
+            function showNotification(message, bcolor, color) {
+                var $notification = $("<span id='notificaton'>")
+                    .appendTo('body')
+                    .html('<p style="color: ' + color + ';">' + message + '</p>')
+                    .css('position', 'fixed')
+                    .css('top', '0')
+                    .css('display', 'block')
+                    .css('width', '100%')
+                    .css('background', bcolor)
+                    .css('color', color);
+                setTimeout(function () { $notification.remove(); }, 1000);
             }
-        });
-    }
-    $("#ddcaggregiert").append("<br/><br/><small><img src='../img/by-nc-nd.svg' /> by <a href='https://www.oclc.org/'>OCLC</a> <img src='../img/flash.svg' height='15px' /> powered by <a href='https://coli-conc.gbv.de/api/'>coli-conc API</a></small>");
 
-    $(".ddc").attr("style", "display: none");
-    $(".ddcaggregiert").removeAttr("style");
-}
-
-function hideDDCAggregation() {
-    $(".ddc").removeAttr("style");
-    $(".ddcaggregiert").attr("style", "display: none");
-}
-
-
-//Funktion für Tauschen des Stylesheets
-function ChangeDesign() {
-    //Falls id "stylesheet" vergeben
-    if ( !!(document.getElementById("stylesheet")) ) {
-	  //Nimm Link zu CSS heraus und ändere id
-      document.getElementById("stylesheet").href = "";
-      document.getElementById("stylesheet").id = "no-stylesheet";
-    } else {
-      document.getElementById("no-stylesheet").href = "malibu_light.css";
-      document.getElementById("no-stylesheet").id = "stylesheet";
-    }
-}
-	
-
-$(document).ready(function(){
-    var clipboard = new Clipboard(".btn");
-    clipboard.on('success', function(e) {
-        showNotification('In die Zwischenablage kopiert!', '#8A4B08', 'white');
-        //e.clearSelection();
-    });
-    clipboard.on('error', function(e) {
-        showNotification('Jetzt Cmd+C zum Kopieren drücken!', '#8A4B08', 'white');
-    });
-
-    //Damit werden die Variablen ueber HTML ausgewertet (so wie GET Variablen in PHP)
-    if (getParameterByName("isbn")) {
-        $('#eingabeIsbn').val(getParameterByName("isbn"));
-        $('#eingabePpn').val('');
-        isbnEingabe(getParameterByName("isbn"));
-    } else if (getParameterByName("ppn")) {
-        $('#eingabePpn').val(getParameterByName("ppn"));
-        $('#eingabeIsbn').val('');
-        if (getParameterByName("verbund")) {
-            $("option[name='eingabeVerbund'][value='"+getParameterByName('verbund')+"']").prop('checked', true);
-            ppnEingabe(getParameterByName("ppn"),getParameterByName("verbund"));
-        } else {
-            ppnEingabe(getParameterByName("ppn"),"SWB");//Wird als Default-Wert gesetzt
-        }
-    }
-    
-    //Aktion bei ISBN Form:
-    $('#formIsbn').on('submit',function(){
-        var parameter = $('#eingabeIsbn').val();
-        window.location = "suche.html?isbn=" + parameter;
-        return false;//damit sollte die eigentlich submit action ignoriert werden
-    });
-
-    //Aktion bei PPN Form:
-    $('#formPpn').on('submit',function(){
-        var parameter = $('#eingabePpn').val();
-        var parameter2 = $('option[name=\'eingabeVerbund\']:checked').val();
-        window.location = "suche.html?ppn=" + parameter + "&verbund=" + parameter2;
-        return false;//damit sollte die eigentlich submit action ignoriert werden
-    });
-
-});
-
-
-function showNotification(message, bcolor, color) {
-    var $notification = $("<span id='notificaton'>")
-      .appendTo('body')
-      .html('<p style="color: '+color+';">' + message + '</p>')
-      .css('position', 'fixed')
-      .css('top', '0')
-      .css('display', 'block')
-      .css('width', '100%')
-      .css('background', bcolor)
-      .css('color', color);
-    setTimeout(function() { $notification.remove(); }, 1000);
-}
-
-function ppnEingabe(ppn, verbund) {
-    verbund = verbund.toLowerCase();
-    $.getJSON(verbund+".php?ppn="+ppn+"&format=json", function(data){
-        if (data['isbn'].length > 0) {
-            var isbnString = data['isbn'].join(",");
-            isbnEingabe(isbnString);
-        } else {
-            $('#status').append('Keine zugehörige ISBN gefunden! (<a href="' + verbund+'.php?ppn='+ppn+'">Daten zum Titel</a>). Ohne ISBN ist aber keine Suche möglich.');
-        }
-    });
-}
-
-
-//mögliche Werte für n:
-// - eine 13-stellige ISBN, z.B. 9783830493662
-// - eine 10-stellige ISBN, z.B. 3830493665
-// - mehrere ISBNs getrennt durch ein Komma oder Semikolon, z.B. 9783830493662,3830493665
-// - mehrere ISBNs getrennt durch "or" und ggf. Leerzeichen, z.B. 9783830493662 or 3830493665
-function isbnEingabe(n) {
-    n = n.replace(/or/gi, ',').replace(/;/g, ',').replace(/\s*/g, '');
-    var query="?isbn="+n;
-    
-    var nArray = n.split(',');
-    $.get("verkaufsinfo.php?isbn13=" + isbn13(nArray[0]), function(data) {
-        $('#verkaufsinfo').append(data);
-    });
-    
-    var suchString = n.replace(/,/g, ' or ');
-    $('#status').append("Gesucht wurden ISBN " + suchString);
-    $('#suche'+'SWB').html('<a href="http://swb.bsz-bw.de/DB=2.1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=1007&TRM='+suchString+'" target="_blank">SWB</a>');
-    $('#suche'+'K10PLUS').html('<a href="https://kxp.k10plus.de/DB=2.0/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=7&TRM='+suchString+'" target="_blank">K10PLUS</a>');
-    $('#suche'+'HEBIS').html('<a href="http://cbsopac.rz.uni-frankfurt.de/DB=2.1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=8520&TRM='+nArray[0]+'" target="_blank">HEBIS</a>');
-    $('#suche'+'B3KAT').html('<a href="https://opacplus.bib-bvb.de/TouchPoint_touchpoint/start.do?Query=-1%3D%22' + nArray[0] + '%22&Language=De&SearchProfile=" target="_blank">B3KAT</a>');
-    $('#suche'+'HBZ').html('<a href="http://okeanos-www.hbz-nrw.de/F/?FUNC=find-c&CCL_TERM=+IBN=%28'+nArray[0]+'" target="_blank">HBZ</a>');
-    $('#suche'+'SWISS').html('<a href="https://www.swissbib.ch/Search/Results?lookfor='+nArray[0]+'&type=AllFields&limit=20&sort=relevance" target="_blank">SWISS</a>');
-    $('#suche'+'OBVSG').html('<a href="http://search.obvsg.at/primo_library/libweb/action/search.do?fn=search&ct=search&initialSearch=true&mode=Basic&tab=default_tab&indx=1&dum=true&srt=rank&vid=OBV&tb=t&vl%28freeText0%29='+nArray[0]+'" target="_blank">OBVSG</a>');
-
-    
-    
-    // Bestandsabgleich für die UB Mannheim
-    // (wird ohne entspechende php-Datei ignoriert)
-    // ist aber anpassbar: 
-    var url = "man-sru.php?isbn=" + suchString + "&format=holdings";
-    $.get(url, function(data){
-        var pattern = /<div>Bestand der UB Mannheim: (.*)</;
-        var holdingsMAN = pattern.exec( data );
-
-        if (holdingsMAN) {
-             $('#bestandsabgleich').append('<br/><div style="background-color:#ffbbbb">Bestand der UB Mannheim: ' + holdingsMAN[1] + ' (<a href="'+url+'" onclick="return toggleHidden()">Details</a>)<div id="detailsText" style="display: none;" class="hidden"><br/></div></div>');
-        }
-        //TODO alles hier effizienter und besser machen (aber vorerst funktioniert es:-)
-        $( "#detailsText" ).load( url.replace(/ /g, '+')+" table" );
-    });
-
-   
-    $.getJSON("swb.php"+query+"&format=json", function(data){
-        $('#titel').append("<b>"+data["titel"][0] + "</b> <i>" + data["autor"][0] + "</i><br/>");
-        if (data["gesamttitel"].length>0) {
-            $('#titel').append("("+data["gesamttitel"]+")<br/>");
-        }
-        if (data["hochschulvermerk"].length>0) {
-            $('#titel').append(data["hochschulvermerk"]+"<br/>");
-        }
-        if (data["isbn"].length>0) {
-            $('#titel').append(data["isbn"].join(", ")+"<br/>");
-        }
-        
-        $('#ausgaben').html('<table id="ausgabenTable" border="1" width="100%"></table>');
-        databaseText = 'K10plusPPN: ';
-        var bestandsArray = [];
-        $.each(data.einzelaufnahmen, function(key, currentRecord) {
-            $('#ausgaben table').append("<tr id='"+currentRecord.id+"'>");
-//alert(coins(currentRecord));
-            $('#'+currentRecord.id).append("<td>"+coins(currentRecord)+currentRecord.id+"<br/><button class='btn' title='In Zwischenablage kopieren' data-clipboard-text=''>Bestell Info <img src='../img/clippy.svg' width='16'/></button></td>");
-            $('#'+currentRecord.id).append("<td>"+render(currentRecord.auflage)+"</td>");
-            $('#'+currentRecord.id).append("<td>"+render(currentRecord.erscheinungsinfo)+"</td>");
-            if (render(currentRecord.produktSigel) == '') {
-                $('#'+currentRecord.id).append("<td>"+render(currentRecord.umfang)+"</td>");
-            } else {
-                $('#'+currentRecord.id).append("<td>"+render(currentRecord.umfang)+' ['+renderSigel(currentRecord.produktSigel)+"]</td>");
+            function ppnEingabe(ppn, verbund) {
+                verbund = verbund.toLowerCase();
+                $.getJSON(verbund + ".php?ppn=" + ppn + "&format=json", function (data) {
+                    if (data['isbn'].length > 0) {
+                        var isbnString = data['isbn'].join(",");
+                        isbnEingabe(isbnString);
+                    } else {
+                        $('#status').append('Keine zugehörige ISBN gefunden! (<a href="' + verbund + '.php?ppn=' + ppn + '">Daten zum Titel</a>). Ohne ISBN ist aber keine Suche möglich.');
+                    }
+                });
             }
-            $('#'+currentRecord.id).append("<td>"+renderBestandSWB(currentRecord.bestand, currentRecord.id)+"</td>");
-            bestandsArray.push(currentRecord.bestand.length);
 
-            $('#'+currentRecord.id+" button").attr("data-clipboard-text", bestellInfo(databaseText, currentRecord));
 
-            // invoke Zotero after COinS rebuild
-            var ev = document.createEvent('HTMLEvents');
-            ev.initEvent('ZoteroItemUpdated', true, true);
-            document.dispatchEvent(ev);
-            
-        });
+            //mögliche Werte für n:
+            // - eine 13-stellige ISBN, z.B. 9783830493662
+            // - eine 10-stellige ISBN, z.B. 3830493665
+            // - mehrere ISBNs getrennt durch ein Komma oder Semikolon, z.B. 9783830493662,3830493665
+            // - mehrere ISBNs getrennt durch "or" und ggf. Leerzeichen, z.B. 9783830493662 or 3830493665
+            function isbnEingabe(n) {
+                n = n.replace(/or/gi, ',').replace(/;/g, ',').replace(/\s*/g, '');
+                var query = "?isbn=" + n;
 
-        $('#bestand'+"SWB").append(bestandsArray.join(" + "));
-        $('#rvk'+'SWB').html( renderRVK(data.rvk) );
-        $('#rvk'+'SWB a').each( addBenennung );
-        $('#ddc'+'SWB').html( renderDDC(data.ddc) );
-        $('#sw'+'SWB').html( renderSW(data.sw) ); 
-        
-        if(data.produktSigel && data.produktSigel.length>0) {
-            $('#pda').append( renderPS(data.produktSigel) );
-        }
-        
-        $('#links').append( renderLinks(data.links) );
-        if (data.dnbNr.length>0) {
-            $('#links').append( renderLinks( [ "http://d-nb.info/"+data.dnbNr[0] ] ) );
-        }
-        if (data.oclcNr.length>0) {
-            $('#links').append( renderLinks( [ "http://www.worldcat.org/oclc/"+data.oclcNr[0] ] ) );
-        }
-        
-        //Durch die Asynchronität gib es hier einige Code-Doppelungen --> Sind diese vermeidbar?
-        //Falls im SWB keine Titelaufnahme gefunden wird, dann sehen wir im BL Katalog noch nach
-        if( $('#ausgaben tr').length == 0 ) {
-            $.getJSON("bl.php"+query+"&format=json", function(data){
-                $('#titel').html("<b>"+data["titel"][0] + "</b> <i>" + data["autor"][0] + "</i><br/>");
-                if (data["gesamttitel"].length>0) {
-                    $('#titel').append("("+data["gesamttitel"]+")<br/>");
-                }
-                if (data["hochschulvermerk"].length>0) {
-                    $('#titel').append(data["hochschulvermerk"]+"<br/>");
-                }
-                if (data["isbn"].length>0) {
-                    $('#titel').append(data["isbn"].join(", ")+"<br/>");
-                }
-                
-                $('#ausgaben').html('<table border="1" width="100%" bgcolor="#f0e68c"></table>');
-                databaseText = 'BL-Nr.: ';
-                $.each(data.einzelaufnahmen, function(key, currentRecord) {
-                    $('#ausgaben table').append("<tr id='"+currentRecord.id+"'><td>"+coins(currentRecord)+currentRecord.id+"<br/><button class='btn' title='In Zwischenablage kopieren' data-clipboard-text=''>Bestell Info <img src='../img/clippy.svg' width='16'/></button></td>");
-                    $('#'+currentRecord.id).append("<td>"+render(currentRecord.auflage)+"</td>");
-                    $('#'+currentRecord.id).append("<td>"+render(currentRecord.erscheinungsinfo)+"</td>");
-                    $('#'+currentRecord.id).append("<td>"+render(currentRecord.umfang)+"</td>");
-                    $('#'+currentRecord.id).append("<td>"+renderBestandSWB(currentRecord.bestand)+"</td>");
-                    
-                    $('#'+currentRecord.id+" button").attr("data-clipboard-text", bestellInfo(databaseText, currentRecord));
+                var nArray = n.split(',');
+                $.get("verkaufsinfo.php?isbn13=" + isbn13(nArray[0]), function (data) {
+                    $('#verkaufsinfo').append(data);
+                });
 
-                    // invoke Zotero after COinS rebuild
-                    var ev = document.createEvent('HTMLEvents');
-                    ev.initEvent('ZoteroItemUpdated', true, true);
-                    document.dispatchEvent(ev);
+                var suchString = n.replace(/,/g, ' or ');
+                $('#status').append("Gesucht wurden ISBN " + suchString);
+                $('#suche' + 'SWB').html('<a href="http://swb.bsz-bw.de/DB=2.1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=1007&TRM=' + suchString + '" target="_blank">SWB</a>');
+                $('#suche' + 'K10PLUS').html('<a href="https://kxp.k10plus.de/DB=2.0/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=7&TRM=' + suchString + '" target="_blank">K10PLUS</a>');
+                $('#suche' + 'HEBIS').html('<a href="http://cbsopac.rz.uni-frankfurt.de/DB=2.1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=8520&TRM=' + nArray[0] + '" target="_blank">HEBIS</a>');
+                $('#suche' + 'B3KAT').html('<a href="https://opacplus.bib-bvb.de/TouchPoint_touchpoint/start.do?Query=-1%3D%22' + nArray[0] + '%22&Language=De&SearchProfile=" target="_blank">B3KAT</a>');
+                $('#suche' + 'HBZ').html('<a href="http://okeanos-www.hbz-nrw.de/F/?FUNC=find-c&CCL_TERM=+IBN=%28' + nArray[0] + '" target="_blank">HBZ</a>');
+                $('#suche' + 'SWISS').html('<a href="https://www.swissbib.ch/Search/Results?lookfor=' + nArray[0] + '&type=AllFields&limit=20&sort=relevance" target="_blank">SWISS</a>');
+                $('#suche' + 'OBVSG').html('<a href="http://search.obvsg.at/primo_library/libweb/action/search.do?fn=search&ct=search&initialSearch=true&mode=Basic&tab=default_tab&indx=1&dum=true&srt=rank&vid=OBV&tb=t&vl%28freeText0%29=' + nArray[0] + '" target="_blank">OBVSG</a>');
+
+
+
+                // kplus für die UB Mannheim
+                // (wird ohne entspechende php-Datei ignoriert)
+                // // ist aber anpassbar:
+                // var url = "man-sru.php?isbn=" + suchString + "&format=holdings";
+                // $.get(url, function (data) {
+                //     var pattern = /<div>Bestand der UB Mannheim: (.*)</;
+                //     var holdingsMAN = pattern.exec(data);
+
+                //     if (holdingsMAN) {
+                //         $('#kplus').append('<br/><div style="background-color:#ffbbbb">Bestand der UB Mannheim: ' + holdingsMAN[1] + ' (<a href="' + url + '" onclick="return toggleHidden()">Details</a>)<div id="detailsText" ><br/></div></div>');
+                //     }
+                //     //TODO alles hier effizienter und besser machen (aber vorerst funktioniert es:-)
+                //     $("#detailsText").load(url.replace(/ /g, '+') + " table");
+                // });
+
+
+                $.getJSON("swb.php" + query + "&format=json", function (data) {
+                    $('#titel').append("<b>" + data["titel"][0] + "</b> <i>" + data["autor"][0] + "</i><br/>");
+                    if (data["gesamttitel"].length > 0) {
+                        $('#titel').append("(" + data["gesamttitel"] + ")<br/>");
+                    }
+                    if (data["hochschulvermerk"].length > 0) {
+                        $('#titel').append(data["hochschulvermerk"] + "<br/>");
+                    }
+                    if (data["isbn"].length > 0) {
+                        $('#titel').append(data["isbn"].join(", ") + "<br/>");
+                    }
+
+                    $('#ausgaben').html('<table id="ausgabenTable" border="1" width="100%"></table>');
+                    databaseText = 'K10plusPPN: ';
+                    var bestandsArray = [];
+                    $.each(data.einzelaufnahmen, function (key, currentRecord) {
+                        $('#ausgaben table').append("<tr id='" + currentRecord.id + "'>");
+                        //alert(coins(currentRecord));
+                        $('#' + currentRecord.id).append("<td>" + coins(currentRecord) + currentRecord.id + "<br/><button class='btn' title='In Zwischenablage kopieren' data-clipboard-text=''>Bestell Info <img src='../img/clippy.svg' width='16'/></button></td>");
+                        $('#' + currentRecord.id).append("<td>" + render(currentRecord.auflage) + "</td>");
+                        $('#' + currentRecord.id).append("<td>" + render(currentRecord.erscheinungsinfo) + "</td>");
+                        if (render(currentRecord.produktSigel) == '') {
+                            $('#' + currentRecord.id).append("<td>" + render(currentRecord.umfang) + "</td>");
+                        } else {
+                            $('#' + currentRecord.id).append("<td>" + render(currentRecord.umfang) + ' [' + renderSigel(currentRecord.produktSigel) + "]</td>");
+                        }
+                        $('#' + currentRecord.id).append("<td>" + renderBestandSWB(currentRecord.bestand, currentRecord.id) + "</td>");
+                        bestandsArray.push(currentRecord.bestand.length);
+
+                        $('#' + currentRecord.id + " button").attr("data-clipboard-text", bestellInfo(databaseText, currentRecord));
+
+                        // invoke Zotero after COinS rebuild
+                        var ev = document.createEvent('HTMLEvents');
+                        ev.initEvent('ZoteroItemUpdated', true, true);
+                        document.dispatchEvent(ev);
+
+                    });
+
+                    $('#bestand' + "SWB").append(bestandsArray.join(" + "));
+                    $('#rvk' + 'SWB').html(renderRVK(data.rvk));
+                    $('#rvk' + 'SWB a').each(addBenennung);
+                    $('#ddc' + 'SWB').html(renderDDC(data.ddc));
+                    $('#sw' + 'SWB').html(renderSW(data.sw));
+
+                    if (data.produktSigel && data.produktSigel.length > 0) {
+                        $('#pda').append(renderPS(data.produktSigel));
+                    }
+
+                    $('#links').append(renderLinks(data.links));
+                    if (data.dnbNr.length > 0) {
+                        $('#links').append(renderLinks(["http://d-nb.info/" + data.dnbNr[0]]));
+                    }
+                    if (data.oclcNr.length > 0) {
+                        $('#links').append(renderLinks(["http://www.worldcat.org/oclc/" + data.oclcNr[0]]));
+                    }
+
+                    //Durch die Asynchronität gib es hier einige Code-Doppelungen --> Sind diese vermeidbar?
+                    //Falls im SWB keine Titelaufnahme gefunden wird, dann sehen wir im BL Katalog noch nach
+                    if ($('#ausgaben tr').length == 0) {
+                        $.getJSON("bl.php" + query + "&format=json", function (data) {
+                            $('#titel').html("<b>" + data["titel"][0] + "</b> <i>" + data["autor"][0] + "</i><br/>");
+                            if (data["gesamttitel"].length > 0) {
+                                $('#titel').append("(" + data["gesamttitel"] + ")<br/>");
+                            }
+                            if (data["hochschulvermerk"].length > 0) {
+                                $('#titel').append(data["hochschulvermerk"] + "<br/>");
+                            }
+                            if (data["isbn"].length > 0) {
+                                $('#titel').append(data["isbn"].join(", ") + "<br/>");
+                            }
+
+                            $('#ausgaben').html('<table border="1" width="100%" bgcolor="#f0e68c"></table>');
+                            databaseText = 'BL-Nr.: ';
+                            $.each(data.einzelaufnahmen, function (key, currentRecord) {
+                                $('#ausgaben table').append("<tr id='" + currentRecord.id + "'><td>" + coins(currentRecord) + currentRecord.id + "<br/><button class='btn' title='In Zwischenablage kopieren' data-clipboard-text=''>Bestell Info <img src='../img/clippy.svg' width='16'/></button></td>");
+                                $('#' + currentRecord.id).append("<td>" + render(currentRecord.auflage) + "</td>");
+                                $('#' + currentRecord.id).append("<td>" + render(currentRecord.erscheinungsinfo) + "</td>");
+                                $('#' + currentRecord.id).append("<td>" + render(currentRecord.umfang) + "</td>");
+                                $('#' + currentRecord.id).append("<td>" + renderBestandSWB(currentRecord.bestand) + "</td>");
+
+                                $('#' + currentRecord.id + " button").attr("data-clipboard-text", bestellInfo(databaseText, currentRecord));
+
+                                // invoke Zotero after COinS rebuild
+                                var ev = document.createEvent('HTMLEvents');
+                                ev.initEvent('ZoteroItemUpdated', true, true);
+                                document.dispatchEvent(ev);
+
+                            });
+
+                            $('#links').append(renderLinks(data.links));
+                        });
+                    }
+
 
                 });
-                
-                $('#links').append( renderLinks(data.links) );
-            });
-        }
 
-       
-    });
-    
-    
-    var andereVerbuende = ["K10PLUS", "HEBIS", "B3KAT", "HBZ", "SWISS", "OBVSG"];
-    $.each(andereVerbuende, function(index, verbund){
-        $.getJSON(verbund.toLowerCase()+".php"+query+"&format=json", function(data){
-            
-            $('#rvk'+verbund).html( renderRVK(data.rvk) );
-            $('#rvk'+verbund+' a').each( addBenennung );
-            $('#ddc'+verbund).html( renderDDC(data.ddc) );
-            $('#sw'+verbund).html( renderSW(data.sw) );
-            $('#links').append( renderLinks(data.links) );
-            if (data.dnbNr.length>0) {
-                $('#links').append( renderLinks( [ "http://d-nb.info/"+data.dnbNr[0] ] ) );
+
+                var andereVerbuende = ["K10PLUS", "HEBIS", "B3KAT", "HBZ", "SWISS", "OBVSG"];
+                $.each(andereVerbuende, function (index, verbund) {
+                    $.getJSON(verbund.toLowerCase() + ".php" + query + "&format=json", function (data) {
+
+                        $('#rvk' + verbund).html(renderRVK(data.rvk));
+                        $('#rvk' + verbund + ' a').each(addBenennung);
+                        $('#ddc' + verbund).html(renderDDC(data.ddc));
+                        $('#sw' + verbund).html(renderSW(data.sw));
+                        $('#links').append(renderLinks(data.links));
+                        if (data.dnbNr.length > 0) {
+                            $('#links').append(renderLinks(["http://d-nb.info/" + data.dnbNr[0]]));
+                        }
+
+                        if (data.oclcNr && data.oclcNr.length > 0) {
+                            $('#links').append(renderLinks(["http://www.worldcat.org/oclc/" + data.oclcNr[0]]));
+                        }
+                        var bestandsListe = [];
+                        for (var i = 0; i < data.einzelaufnahmen.length; i++) {
+                            bestandsListe.push(data.einzelaufnahmen[i].bestand.length);
+                        }
+                        $('#bestand' + verbund).append(bestandsListe.join(" + "));
+                        if (data.produktSigel && data.produktSigel.length > 0) {
+                            $('#pda').append(renderPS(data.produktSigel));
+                        }
+                    });
+                });
+
+                //sometimes the table cells are not correctly rendered if empty
+                $('td:empty').each(function () { $(this).html('&nbsp;'); });
+
+                /**
+                * RDS SOLR Abfrage
+                * über https://crossorigin.me/
+                * https://rds-blb.ibs-bw.de/solr/select?q=978-3-8376-3309-2
+                */
+                var rdsURL = "https://rds-blb.ibs-bw.de/solr/select?q=" + suchString + '&wt=json';
+                var rdsPermaLink = 'https://rds-blb.ibs-bw.de/link?kid=';
+                var rdsDetails = "";
+                var rdsISBNs = "";
+                var rdsMedienIcon = "";
+
+                $('#kplus').append('<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i>');
+                $.getJSON(
+                    'kplus.php',
+                    { isbn: getParameterByName("isbn"), ppn: getParameterByName("ppn") }
+                ).done(function (data) {
+                    if (data.response.numFound > 0) {
+                        $('#kplus').empty();
+                        // console.log(data.response.docs[0].isbn_display[0]);
+                        $('#kplus').append('<br/><div>Bestand der BLB Karlsruhe: ' + data.response.numFound + ' Exemlare (<a href="#" onclick="return toggleHidden()">Details</a>)<div id="detailsTextKplus" style="display: none;" class="hidden"><br/></div></div>');
+                        for (var i = 0; i < data.response.numFound; i++) {
+                            rdsDetails += '<strong>Titel</strong>: ' + data.response.docs[i].ti_long + '<br><strong>PPN</strong>:<a href="' + rdsPermaLink + data.response.docs[i].kid + '" target="_blank"> ' + data.response.docs[i].kid + '</a><br/><strong>ISBN</strong>: ';
+                            for (var a = 0; a < data.response.docs[i].isbn_display.length; a++) {
+                                rdsISBNs += data.response.docs[i].isbn_display[a] + ', ';
+                            }
+                            rdsDetails += rdsISBNs + '<br/><strong>Medieninfo</strong>: ' + data.response.docs[i].medienicon + '<br/><br/>';
+                            rdsISBNs = "";
+                            rdsMedienIcon = "";
+                        }
+                        $("#detailsTextKplus").append(rdsDetails);
+                    } else {
+                        $('#kplus').empty();
+                        $("#kplus").append('<strong>Keine Exemlare in der BLB vorhanden</strong>');
+                    }
+                });
+
             }
-            
-            if (data.oclcNr && data.oclcNr.length>0) {
-                $('#links').append( renderLinks( [ "http://www.worldcat.org/oclc/"+data.oclcNr[0] ] ) );
-            }
-            var bestandsListe = [];
-            for (var i=0; i<data.einzelaufnahmen.length; i++) {
-                bestandsListe.push(data.einzelaufnahmen[i].bestand.length);
-            }
-            $('#bestand'+verbund).append(bestandsListe.join(" + "));
-            if(data.produktSigel && data.produktSigel.length>0) {
-                $('#pda').append( renderPS(data.produktSigel) );
-            }
-        });
-    });
-    
-	//sometimes the table cells are not correctly rendered if empty
-    $('td:empty').each( function() { $(this).html('&nbsp;'); });
-}
 //-->
-</script>
+        </script>
 
-</head>
-<body>    
+    </head>
 
-<h1>Unterstützungstool für Fachreferatsarbeit</h1>
+    <body>
 
-<a href="https://github.com/UB-Mannheim/malibu" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="../img/fork-github.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        <h1>Unterstützungstool für Fachreferatsarbeit</h1>
 
-<table id="Suchzeile">
-    <tr>
-        <td id="idTD">
-            <form id="formPpn" name='formular'  action="#">&nbsp; &nbsp; &nbsp;
-                <input id="eingabePpn" type="text" size="20" maxlength="30" placeholder="id...">
-                <select>
-                    <option type="radio" name="eingabeVerbund" value="K10PLUS">K10PLUS
-                    <option type="radio" name="eingabeVerbund" value="SWB">SWB
-                    <option type="radio" name="eingabeVerbund" value="B3KAT">B3KAT
-                    <option type="radio" name="eingabeVerbund" value="HEBIS">HEBIS
-                    <option type="radio" name="eingabeVerbund" value="HBZ">HBZ
-                    <option type="radio" name="eingabeVerbund" value="SWISS">SWISS
-                    <option type="radio" name="eingabeVerbund" value="OBVSG">OBVSG
-                </select>
-                <input class="button" type="submit" value="Submit">
-            </form>
-        </td>
-        <td id="isbnTD">
-            <form id="formIsbn" name='formular'  action="#">
-                <input id="eingabeIsbn" type="text" size="40" maxlength="30" placeholder="isbn..." autofocus>
-                <input class="button" id="submitIsbn" type="submit" value="Submit">
-            </form>
-        </td>
-        <td id="idTD">
-            <span class="box">
-                <a href="http://wiki.bib.uni-mannheim.de/InterneSeiten/doku.php?id=anleitungen:anleitungen_und_formulare#fachreferenten" target="_blank" title="Internes Wiki -> Unterstützungstool für Fachreferatsarbeit">Hilfe</a>
-            </span>
-            <span class="box" onclick="ChangeDesign();" id="ChangeDesignButton"><b>Design wechseln</b></span>
-        </td>
-    </tr>
-</table>
+        <table id="Suchzeile">
+            <tr>
+                <td id="idTD">
+                    <form id="formPpn" name='formular' action="#">&nbsp; &nbsp; &nbsp;
+                        <input id="eingabePpn" type="text" size="20" maxlength="30" placeholder="id...">
+                        <select>
+                            <option type="radio" name="eingabeVerbund" value="K10PLUS">K10PLUS
+                            <option type="radio" name="eingabeVerbund" value="SWB">SWB
+                            <option type="radio" name="eingabeVerbund" value="B3KAT">B3KAT
+                            <option type="radio" name="eingabeVerbund" value="HEBIS">HEBIS
+                            <option type="radio" name="eingabeVerbund" value="HBZ">HBZ
+                            <option type="radio" name="eingabeVerbund" value="SWISS">SWISS
+                            <option type="radio" name="eingabeVerbund" value="OBVSG">OBVSG
+                        </select>
+                        <input class="button" type="submit" value="Submit">
+                    </form>
+                </td>
+                <td id="isbnTD">
+                    <form id="formIsbn" name='formular' action="#">
+                        <input id="eingabeIsbn" type="text" size="40" maxlength="30" placeholder="isbn..." autofocus>
+                        <input class="button" id="submitIsbn" type="submit" value="Submit">
+                    </form>
+                </td>
+                <td id="idTD">
+                    <!-- <span class="box">
+                        <a href="http://wiki.bib.uni-mannheim.de/InterneSeiten/doku.php?id=anleitungen:anleitungen_und_formulare#fachreferenten"
+                            target="_blank" title="Internes Wiki -> Unterstützungstool für Fachreferatsarbeit">Hilfe</a>
+                    </span>
+                    <span class="box" onclick="ChangeDesign();" id="ChangeDesignButton"><b>Design wechseln</b></span> -->
+                </td>
+            </tr>
+        </table>
 
-<div id='titel'>
-</div>
+        <div id='titel'>
+        </div>
 
-<div id="Abstand">
-<div id='verkaufsinfo'>
-</div>
+        <div id="Abstand">
+            <div id='verkaufsinfo'>
+            </div>
 
-<div id='ausgaben'>
-</div>
+            <div id='kplus'>
+            </div>
 
-<div id='bestandsabgleich'>
-</div>
+            <table id="verbuende" border="1" width="100%">
+                <colgroup>
+                    <col id="verbundColumn">
+                    <col id="rvkColumn">
+                    <col id="rvkAggregiertColumn">
+                    <col id="ddcColumn">
+                    <col id="ddcAggregiertColumn">
+                    <col id="swColumn">
+                </colgroup>
+                <tr class="verbuendeUeber">
+                    <th>&nbsp;</th>
+                    <th class="rvk">RVK-Notation <button onclick="aggregateRVK()">⇲</button></th>
+                    <th class="rvkaggregiert" style="display: none"><button onclick="hideRVKAggregation()">⇱</button>
+                        RVK aggregiert</th>
+                    <th class="ddc">DDC-Notation <button onclick="aggregateDDC()">⇲</button></th>
+                    <th class="ddcaggregiert" style="display: none"><button onclick="hideDDCAggregation()">⇱</button>
+                        DDC aggregiert</th>
+                    <th>Schlagwörter</th>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="sucheSWB">SWB</div><small>
+                            <div id="bestandSWB"></div>
+                        </small>
+                    </td>
+                    <td id="rvkSWB" class="rvk"></td>
+                    <td id="rvkaggregiert" class="rvkaggregiert" rowspan="7" style="display: none"></td>
+                    <td id="ddcSWB" class="ddc"></td>
+                    <td id="ddcaggregiert" class="ddcaggregiert" rowspan="7" style="display: none"></td>
+                    <td id="swSWB"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="sucheK10PLUS">K10PLUS</div><small>
+                            <div id="bestandK10PLUS"></div>
+                        </small>
+                    </td>
+                    <td id="rvkK10PLUS" class="rvk"></td>
+                    <td id="ddcK10PLUS" class="ddc"></td>
+                    <td id="swK10PLUS"></td>
+                </tr>
+                <tr>
+                    <td><span id="sucheB3KAT">B3Kat</span> (Link zu BVB)<small>
+                            <div id="bestandB3KAT"></div>
+                        </small></td>
+                    <td id="rvkB3KAT" class="rvk"></td>
+                    <td id="ddcB3KAT" class="ddc"></td>
+                    <td id="swB3KAT"></td>
+                <tr>
+                    <td>
+                        <div id="sucheHBZ">HBZ</div><small>
+                            <div id="bestandHBZ"></div>
+                        </small>
+                    </td>
+                    <td id="rvkHBZ" class="rvk"></td>
+                    <td id="ddcHBZ" class="ddc"></td>
+                    <td id="swHBZ"></td>
+                <tr>
+                    <td>
+                        <div id="sucheHEBIS">HEBIS</div><small>
+                            <div id="bestandHEBIS"></div>
+                        </small>
+                    </td>
+                    <td id="rvkHEBIS" class="rvk"></td>
+                    <td id="ddcHEBIS" class="ddc"></td>
+                    <td id="swHEBIS"></td>
+                <tr>
+                    <td>
+                        <div id="sucheSWISS">swissbib</div><small>
+                            <div id="bestandSWISS"></div>
+                        </small>
+                    </td>
+                    <td id="rvkSWISS" class="rvk"></td>
+                    <td id="ddcSWISS" class="ddc"></td>
+                    <td id="swSWISS"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="sucheOBVSG">OBVSG</div><small>
+                            <div id="bestandOBVSG"></div>
+                        </small>
+                    </td>
+                    <td id="rvkOBVSG" class="rvk"></td>
+                    <td id="ddcOBVSG" class="ddc"></td>
+                    <td id="swOBVSG"></td>
+                </tr>
+            </table>
 
-<div id='pda'>
-</div>
-
-<table id="verbuende" border="1" width="100%">
-    <colgroup>
-        <col id="verbundColumn">
-        <col id="rvkColumn">
-        <col id="rvkAggregiertColumn">
-        <col id="ddcColumn">
-        <col id="ddcAggregiertColumn">
-        <col id="swColumn">
-    </colgroup>
-    <tr class="verbuendeUeber">
-        <th>&nbsp;</th>
-        <th class="rvk">RVK-Notation  <button onclick="aggregateRVK()">⇲</button></th>
-        <th class="rvkaggregiert" style="display: none"><button onclick="hideRVKAggregation()">⇱</button>  RVK aggregiert</th>
-        <th class="ddc">DDC-Notation  <button onclick="aggregateDDC()">⇲</button></th>
-        <th class="ddcaggregiert" style="display: none"><button onclick="hideDDCAggregation()">⇱</button>  DDC aggregiert</th>
-        <th>Schlagwörter</th>
-    </tr>
-    <tr>
-        <td><div id="sucheSWB">SWB</div><small><div id="bestandSWB"></div></small></td>
-        <td id="rvkSWB" class="rvk"></td>
-        <td id="rvkaggregiert" class="rvkaggregiert" rowspan="7" style="display: none"></td>
-        <td id="ddcSWB" class="ddc"></td>
-        <td id="ddcaggregiert" class="ddcaggregiert" rowspan="7" style="display: none"></td>
-        <td id="swSWB"></td>
-    </tr>
-    <tr>
-        <td><div id="sucheK10PLUS">K10PLUS</div><small><div id="bestandK10PLUS"></div></small></td>
-        <td id="rvkK10PLUS" class="rvk"></td>
-        <td id="ddcK10PLUS" class="ddc"></td>
-        <td id="swK10PLUS"></td>
-    </tr>
-    <tr>
-        <td><span id="sucheB3KAT">B3Kat</span> (Link zu BVB)<small><div id="bestandB3KAT"></div></small></td>
-        <td id="rvkB3KAT" class="rvk"></td>
-        <td id="ddcB3KAT" class="ddc"></td>
-        <td id="swB3KAT"></td>
-    <tr>
-        <td><div id="sucheHBZ">HBZ</div><small><div id="bestandHBZ"></div></small></td>
-        <td id="rvkHBZ" class="rvk"></td>
-        <td id="ddcHBZ" class="ddc"></td>
-        <td id="swHBZ"></td>
-    <tr>
-        <td><div id="sucheHEBIS">HEBIS</div><small><div id="bestandHEBIS"></div></small></td>
-        <td id="rvkHEBIS" class="rvk"></td>
-        <td id="ddcHEBIS" class="ddc"></td>
-        <td id="swHEBIS"></td>
-	<tr>
-        <td><div id="sucheSWISS">swissbib</div><small><div id="bestandSWISS"></div></small></td>
-        <td id="rvkSWISS" class="rvk"></td>
-        <td id="ddcSWISS" class="ddc"></td>
-        <td id="swSWISS"></td>
-    </tr>
-    <tr>
-        <td><div id="sucheOBVSG">OBVSG</div><small><div id="bestandOBVSG"></div></small></td>
-        <td id="rvkOBVSG" class="rvk"></td>
-        <td id="ddcOBVSG" class="ddc"></td>
-        <td id="swOBVSG"></td>
-    </tr>
-</table>
-
-<div id='weiteres'>
-</div>
-
-<div id='links'>
-</div>
-
-</div>
+            <div id='ausgaben'>
+            </div>
 
 
-	
-<div id='status'>
-</div>
 
-</body>
+
+
+            <div id='pda'>
+            </div>
+
+            <div id='kplus'>
+            </div>
+
+
+
+            <div id='weiteres'>
+            </div>
+
+            <div id='links'>
+            </div>
+
+        </div>
+
+
+
+        <div id='status'>
+        </div>
+
+    </body>
+
 </html>
